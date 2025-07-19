@@ -1,0 +1,30 @@
+{
+    "name": "controle-pedidos/ecommerce",
+    "description": "Sistema de E-commerce - Mini ERP para controle de Pedidos, Produtos, Cupons e Estoque",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Desenvolvedor",
+            "email": "dev@exemplo.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "codeigniter/framework": "3.1.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"if (!file_exists('application/config/database.php')) { copy('application/config/database.example.php', 'application/config/database.php'); }\""
+        ],
+        "post-update-cmd": [
+            "php -r \"if (!file_exists('application/config/database.php')) { copy('application/config/database.example.php', 'application/config/database.php'); }\""
+        ]
+    },
+    "config": {
+        "vendor-dir": "vendor"
+    }
+}

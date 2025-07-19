@@ -1,0 +1,44 @@
+# CodeIgniter Framework (gerenciado via Composer)
+system/
+vendor/
+
+# CodeIgniter - Logs e Cache
+application/logs/*
+!application/logs/index.html
+!application/logs/.htaccess
+
+application/cache/*
+!application/cache/index.html
+!application/cache/.htaccess
+
+# Configurações sensíveis
+application/config/database.php
+application/config/email.php
+
+# Docker
+.env
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-*
+
+# Dependências
+node_modules/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.log
+
+# Uploads (se houver)
+uploads/*
+!uploads/index.html
+
+# Arquivos de backup
+*.bak
+*.backup
