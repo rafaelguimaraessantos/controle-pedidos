@@ -10,6 +10,12 @@ RUN a2enmod rewrite
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Instalar pacotes git, unzip, zip e extensão zip do PHP
+RUN apt-get update && \
+    apt-get install -y git unzip zip libzip-dev && \
+    docker-php-ext-install zip && \
+    rm -rf /var/lib/apt/lists/*
+
 # Define o diretório de trabalho
 WORKDIR /var/www/html
 
