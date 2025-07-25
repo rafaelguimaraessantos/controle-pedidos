@@ -1,5 +1,5 @@
 <?php
-class Cupons extends CI_Controller {
+class Cupons extends MY_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('Cupom_model');

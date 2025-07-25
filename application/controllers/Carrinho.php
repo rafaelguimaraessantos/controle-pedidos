@@ -1,6 +1,8 @@
 <?php
-class Carrinho extends CI_Controller {
-    public function __construct() {
+class Carrinho extends MY_Controller
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('Produto_model');
         $this->load->model('Variacao_model');
@@ -11,6 +13,7 @@ class Carrinho extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
     }
+    
     public function index() {
         $carrinho = $this->session->userdata('carrinho') ?: [];
         $subtotal = 0;
@@ -230,7 +233,7 @@ class Carrinho extends CI_Controller {
             }
         }
         // (Opcional) Enviar e-mail de confirmação (implementar depois)
-        $this->enviar_email_confirmacao($email, $cliente, $pedido_id);
+        $this->enviar_email($email, $cliente, $pedido_id);
         // Limpa carrinho
         $this->session->unset_userdata('carrinho');
         $this->session->set_flashdata('sucesso', 'Pedido realizado com sucesso!');
@@ -259,17 +262,5 @@ class Carrinho extends CI_Controller {
         }
         echo json_encode($res);
         exit;
-    }
-
-    private function enviar_email_confirmacao($email, $cliente, $pedido_id) {
-        $this->load->library('email');
-        $this->email->from('rafaelguimaraessantos3@gmail.com', 'Loja Exemplo');
-        $this->email->to($email);
-        $this->email->subject('Confirmação do Pedido #' . $pedido_id);
-        $mensagem = "<h2>Olá, $cliente!</h2>";
-        $mensagem .= "<p>Seu pedido #$pedido_id foi recebido com sucesso.</p>";
-        $mensagem .= "<p>Obrigado por comprar conosco!</p>";
-        $this->email->message($mensagem);
-        $this->email->send(); // Envio silencioso
     }
 } 

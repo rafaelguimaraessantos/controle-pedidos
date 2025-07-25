@@ -22,4 +22,24 @@ class Welcome extends CI_Controller {
 	{
 		$this->load->view('welcome_message');
 	}
+
+	public function test_db()
+	{
+		// Teste de conexão com o banco de dados
+		if ($this->db->conn_id) {
+			echo "Conexão com o banco de dados estabelecida com sucesso!<br>";
+			
+			// Testar uma query simples
+			$query = $this->db->query("SELECT COUNT(*) as total FROM produtos");
+			if ($query) {
+				$result = $query->row();
+				echo "Total de produtos: " . $result->total . "<br>";
+			} else {
+				echo "Erro ao executar query: " . $this->db->error()['message'] . "<br>";
+			}
+		} else {
+			echo "Erro: Não foi possível conectar ao banco de dados.<br>";
+			echo "Erro: " . $this->db->error()['message'] . "<br>";
+		}
+	}
 }
