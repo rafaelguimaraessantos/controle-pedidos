@@ -10,7 +10,6 @@ class Carrinho extends MY_Controller
         $this->load->model('Cupom_model');
         $this->load->model('Pedido_model');
         $this->load->model('Pedido_itens_model');
-        $this->load->library('session');
         $this->load->helper('url');
     }
     
@@ -35,7 +34,13 @@ class Carrinho extends MY_Controller
             'frete' => $frete,
             'total' => $total
         ];
-        $this->load->view('carrinho_view', $data);
+        
+        // Breadcrumb
+        $breadcrumb = array(
+            add_breadcrumb_item('Carrinho')
+        );
+        
+        render_page('carrinho_view', $data, 'Carrinho de Compras', 'Gerencie os itens do seu carrinho', $breadcrumb);
     }
     public function adicionar($produto_id) {
         $produto = $this->Produto_model->get($produto_id);
@@ -171,7 +176,14 @@ class Carrinho extends MY_Controller
                 'frete' => $frete,
                 'total' => $total
             ];
-            $this->load->view('finalizar_pedido', $data);
+            
+            // Breadcrumb
+            $breadcrumb = array(
+                add_breadcrumb_item('Carrinho', base_url('carrinho')),
+                add_breadcrumb_item('Finalizar Pedido')
+            );
+            
+            render_page('finalizar_pedido', $data, 'Finalizar Pedido', 'Complete seus dados para finalizar a compra', $breadcrumb);
             return;
         }
         // POST: processa finalização
@@ -210,13 +222,19 @@ class Carrinho extends MY_Controller
         ]);
         // Salva itens e atualiza estoque
         foreach ($carrinho as $item) {
-            $this->Pedido_itens_model->insert([
+            $item_data = [
                 'pedido_id' => $pedido_id,
-                'produto_id' => $item['produto_id'],
-                'variacao_id' => isset($item['variacao_id']) ? $item['variacao_id'] : null,
                 'quantidade' => $item['quantidade'],
                 'preco' => $item['preco']
-            ]);
+            ];
+            
+            if (isset($item['variacao_id'])) {
+                $item_data['variacao_id'] = $item['variacao_id'];
+            } else {
+                $item_data['produto_id'] = $item['produto_id'];
+            }
+            
+            $this->Pedido_itens_model->insert($item_data);
             // Atualiza estoque
             if (isset($item['variacao_id'])) {
                 $estoque = $this->Estoque_model->get_by_variacao($item['variacao_id']);

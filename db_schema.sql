@@ -58,9 +58,12 @@ CREATE TABLE cupons (
 CREATE TABLE pedido_itens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     pedido_id INT NOT NULL,
-    variacao_id INT NOT NULL,
+    produto_id INT DEFAULT NULL,
+    variacao_id INT DEFAULT NULL,
     quantidade INT NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
-    FOREIGN KEY (variacao_id) REFERENCES variacoes(id) ON DELETE CASCADE
+    FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE,
+    FOREIGN KEY (variacao_id) REFERENCES variacoes(id) ON DELETE CASCADE,
+    CHECK (produto_id IS NOT NULL OR variacao_id IS NOT NULL)
 ); 

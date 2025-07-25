@@ -1,147 +1,185 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Produtos</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .cart-icon {
-            transition: all 0.3s ease;
-            border-radius: 50px;
-            padding: 12px 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .cart-icon:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            background-color: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
-        }
-        .header-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #dc3545;
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            border: 2px solid white;
-            animation: pulse 2s infinite;
-        }
-        .cart-icon:hover .cart-badge {
-            background: #fff;
-            color: #0d6efd;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-    </style>
-</head>
-<body>
-<div class="container mt-4">
-    <?php $CI =& get_instance(); ?>
-    <?php if ($CI->session->flashdata('sucesso')): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-sucesso">
-            <?= $CI->session->flashdata('sucesso') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-        </div>
-        <script>
-        setTimeout(function() {
-            var alert = document.getElementById('alert-sucesso');
-            if (alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }
-        }, 3000);
-        </script>
-    <?php endif; ?>
-    <?php if ($CI->session->flashdata('erro')): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert-erro">
-            <?= $CI->session->flashdata('erro') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-        </div>
-        <script>
-        setTimeout(function() {
-            var alert = document.getElementById('alert-erro');
-            if (alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }
-        }, 3000);
-        </script>
-    <?php endif; ?>
-    <div class="header-section">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="mb-1 text-primary">🛍️ Produtos</h1>
-            </div>
-            <a href="<?php echo site_url('carrinho'); ?>" 
-               class="btn btn-outline-primary cart-icon position-relative" 
-               data-bs-toggle="tooltip" 
-               data-bs-placement="left" 
-               data-bs-title="Ir para carrinho">
-                <i class="bi bi-cart3 fs-4"></i>
-                <?php if (isset($total_itens_carrinho) && $total_itens_carrinho > 0): ?>
-                    <span class="cart-badge"><?= $total_itens_carrinho ?></span>
+<!-- Header com botão do carrinho -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1 text-primary">
+            <i class="bi bi-box me-2"></i>
+            Lista de Produtos
+        </h2>
+        <p class="text-muted mb-0">Gerencie todos os produtos do sistema</p>
+    </div>
+    <a href="<?php echo site_url('carrinho'); ?>" 
+       class="btn btn-outline-primary position-relative" 
+       data-bs-toggle="tooltip" 
+       data-bs-placement="left" 
+       data-bs-title="Ir para carrinho">
+        <i class="bi bi-cart3 fs-4"></i>
+        <?php if (isset($total_itens_carrinho) && $total_itens_carrinho > 0): ?>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                <?= $total_itens_carrinho ?>
+            </span>
+        <?php endif; ?>
+    </a>
+</div>
+
+<!-- Botão de adicionar produto -->
+<div class="mb-4">
+    <a href="<?php echo site_url('produtos/create'); ?>" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>
+        Cadastrar Produto
+    </a>
+</div>
+
+<!-- Tabela de produtos -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Preço</th>
+                        <th scope="col">Estoque</th>
+                        <th scope="col" class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php if (!empty($produtos)): ?>
+                    <?php foreach ($produtos as $produto): ?>
+                        <tr>
+                            <td><span class="badge bg-secondary"><?= $produto->id ?></span></td>
+                            <td>
+                                <strong><?= htmlspecialchars($produto->nome) ?></strong>
+                                <?php if (!empty($produto->descricao)): ?>
+                                    <br><small class="text-muted"><?= htmlspecialchars($produto->descricao) ?></small>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-success">
+                                    R$ <?= number_format($produto->preco, 2, ',', '.') ?>
+                                </span>
+                            </td>
+                            <td>
+                                <?php if ($produto->estoque > 0): ?>
+                                    <span class="badge bg-success"><?= $produto->estoque ?> unidades</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger">Sem estoque</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="<?php echo site_url('produtos/edit/'.$produto->id); ?>" 
+                                       class="btn m-2 btn-sm btn-outline-warning" 
+                                       data-bs-toggle="tooltip" 
+                                       data-bs-title="Editar produto">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="<?php echo site_url('carrinho/adicionar/'.$produto->id); ?>" 
+                                       class="btn m-2 btn-sm btn-outline-success" 
+                                       data-bs-toggle="tooltip" 
+                                       data-bs-title="Adicionar ao carrinho">
+                                        <i class="bi bi-cart-plus"></i>
+                                    </a>
+                                    <a href="<?php echo site_url('produtos/delete/'.$produto->id); ?>" 
+                                       class="btn m-2 btn-sm btn-outline-danger" 
+                                       onclick="return confirmDelete('Tem certeza que deseja excluir este produto?')"
+                                       data-bs-toggle="tooltip" 
+                                       data-bs-title="Excluir produto">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <div class="text-muted">
+                                <i class="bi bi-box fs-1 d-block mb-3"></i>
+                                <h5>Nenhum produto cadastrado</h5>
+                                <p>Comece adicionando seu primeiro produto ao sistema.</p>
+                                <a href="<?php echo site_url('produtos/create'); ?>" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Cadastrar Produto
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                 <?php endif; ?>
-                <span class="visually-hidden">Ver Carrinho</span>
-            </a>
+                </tbody>
+            </table>
         </div>
     </div>
-    <a href="<?php echo site_url('produtos/create'); ?>" class="btn btn-primary mb-3">Cadastrar Produto</a>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Estoque</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php if (!empty($produtos)): ?>
-            <?php foreach ($produtos as $produto): ?>
-                <tr>
-                    <td><?= $produto->id ?></td>
-                    <td><?= htmlspecialchars($produto->nome) ?></td>
-                    <td>R$ <?= number_format($produto->preco, 2, ',', '.') ?></td>
-                    <td><?= $produto->estoque ?></td>
-                    <td>
-                        <a href="<?php echo site_url('produtos/edit/'.$produto->id); ?>" class="btn btn-sm btn-warning">Editar</a>
-                        <a href="<?php echo site_url('produtos/delete/'.$produto->id); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?')">Excluir</a>
-                        <a href="<?php echo site_url('carrinho/adicionar/'.$produto->id); ?>" class="btn btn-sm btn-success">Comprar</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr><td colspan="5">Nenhum produto cadastrado.</td></tr>
-        <?php endif; ?>
-        </tbody>
-    </table>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Inicializar tooltips
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-</script>
-</body>
-</html> 
+
+<!-- Estatísticas -->
+<?php if (!empty($produtos)): ?>
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total de Produtos</h6>
+                        <h3 class="mb-0"><?= count($produtos) ?></h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-box fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Com Estoque</h6>
+                        <h3 class="mb-0">
+                            <?= count(array_filter($produtos, function($p) { return $p->estoque > 0; })) ?>
+                        </h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-check-circle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Sem Estoque</h6>
+                        <h3 class="mb-0">
+                            <?= count(array_filter($produtos, function($p) { return $p->estoque <= 0; })) ?>
+                        </h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Valor Total</h6>
+                        <h3 class="mb-0">
+                            R$ <?= number_format(array_sum(array_map(function($p) { return $p->preco * $p->estoque; }, $produtos)), 2, ',', '.') ?>
+                        </h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-currency-dollar fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?> 

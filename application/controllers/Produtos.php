@@ -6,7 +6,6 @@ class Produtos extends CI_Controller {
         $this->load->model('Variacao_model');
         $this->load->model('Estoque_model');
         $this->load->helper(array('form', 'url'));
-        $this->load->library('session'); // Garante acesso à sessão
     }
     public function index() {
         $data['produtos'] = $this->Produto_model->get_all();
@@ -30,7 +29,12 @@ class Produtos extends CI_Controller {
         }
         $data['total_itens_carrinho'] = $total_itens_carrinho;
         
-        $this->load->view('produtos_list', $data);
+        // Breadcrumb
+        $breadcrumb = array(
+            add_breadcrumb_item('Produtos')
+        );
+        
+        render_page('produtos_list', $data, 'Produtos', 'Gerencie os produtos do sistema', $breadcrumb);
     }
     public function create() {
         // Conta itens no carrinho
@@ -41,7 +45,13 @@ class Produtos extends CI_Controller {
         }
         $data['total_itens_carrinho'] = $total_itens_carrinho;
         
-        $this->load->view('produtos_form', $data);
+        // Breadcrumb
+        $breadcrumb = array(
+            add_breadcrumb_item('Produtos', base_url('produtos')),
+            add_breadcrumb_item('Novo Produto')
+        );
+        
+        render_page('produtos_form', $data, 'Novo Produto', 'Adicione um novo produto ao sistema', $breadcrumb);
     }
     public function store() {
         $produto = [

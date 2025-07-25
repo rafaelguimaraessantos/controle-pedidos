@@ -20,7 +20,8 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		// Redireciona para a página de produtos como página inicial
+		redirect('produtos');
 	}
 
 	public function test_db()

@@ -1,82 +1,75 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Finalizar Pedido</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .cart-icon {
-            transition: all 0.3s ease;
-            border-radius: 50px;
-            padding: 12px 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .cart-icon:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            background-color: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
-        }
-        .header-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-        }
-        .form-section {
-            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-            border: 1px solid #e9ecef;
-        }
-        .order-summary {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin: 8px 0;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-        }
-        .section-title {
-            color: #0d6efd;
-            border-bottom: 1px solid #e9ecef;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-            font-size: 1rem;
-        }
-    </style>
-    <script>
-    function buscarCepAutomatico(cep) {
-        const mensagemDiv = document.getElementById('mensagem-cep');
-        
-        if (cep.length === 8) {
-            // Limpar mensagem anterior
-            mensagemDiv.innerHTML = '';
-            
-            fetch('https://viacep.com.br/ws/' + cep + '/json/')
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.erro) {
-                        document.getElementById('endereco').value = data.logradouro + ', ' + (data.bairro || '') + ', ' + (data.localidade || '') + ' - ' + (data.uf || '');
-                        mensagemDiv.innerHTML = '<small class="text-success"><i class="bi bi-check-circle me-1"></i>CEP encontrado!</small>';
-                    } else {
-                        document.getElementById('endereco').value = '';
-                        mensagemDiv.innerHTML = '<small class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>CEP não encontrado. Verifique o número digitado.</small>';
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('endereco').value = '';
-                    mensagemDiv.innerHTML = '<small class="text-warning"><i class="bi bi-wifi-off me-1"></i>Erro ao buscar CEP. Verifique sua conexão.</small>';
-                });
-        }
+<style>
+    .cart-icon {
+        transition: all 0.3s ease;
+        border-radius: 50px;
+        padding: 12px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    </script>
-</head>
-<body>
+    .cart-icon:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+    .header-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .form-section {
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        border: 1px solid #e9ecef;
+    }
+    .order-summary {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin: 8px 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .section-title {
+        color: #0d6efd;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+</style>
+
+<script>
+function buscarCepAutomatico(cep) {
+    const mensagemDiv = document.getElementById('mensagem-cep');
+    
+    if (cep.length === 8) {
+        // Limpar mensagem anterior
+        mensagemDiv.innerHTML = '';
+        
+        fetch('https://viacep.com.br/ws/' + cep + '/json/')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.erro) {
+                    document.getElementById('endereco').value = data.logradouro + ', ' + (data.bairro || '') + ', ' + (data.localidade || '') + ' - ' + (data.uf || '');
+                    mensagemDiv.innerHTML = '<small class="text-success"><i class="bi bi-check-circle me-1"></i>CEP encontrado!</small>';
+                } else {
+                    document.getElementById('endereco').value = '';
+                    mensagemDiv.innerHTML = '<small class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>CEP não encontrado. Verifique o número digitado.</small>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('endereco').value = '';
+                mensagemDiv.innerHTML = '<small class="text-warning"><i class="bi bi-wifi-off me-1"></i>Erro ao buscar CEP. Verifique sua conexão.</small>';
+            });
+    }
+}
+</script>
+
 <div class="container mt-2">
     <div class="header-section">
         <div class="d-flex justify-content-between align-items-center">
@@ -215,7 +208,7 @@
         </div>
     </form>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 document.getElementById('btn-aplicar-cupom').onclick = function() {
     var cupom = document.getElementById('cupom').value;
@@ -241,10 +234,6 @@ document.getElementById('btn-aplicar-cupom').onclick = function() {
     });
 };
 
-// Inicializar tooltips
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
 // Busca automática de CEP
 document.getElementById('cep').addEventListener('input', function(e) {
     let cep = e.target.value.replace(/\D/g, '');
@@ -260,6 +249,4 @@ document.getElementById('cep').addEventListener('input', function(e) {
         buscarCepAutomatico(cep.replace('-', ''));
     }
 });
-</script>
-</body>
-</html> 
+</script> 

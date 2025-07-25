@@ -7,10 +7,22 @@ class Cupons extends MY_Controller {
     }
     public function index() {
         $data['cupons'] = $this->Cupom_model->get_all();
-        $this->load->view('cupons_list', $data);
+        
+        // Breadcrumb
+        $breadcrumb = array(
+            add_breadcrumb_item('Cupons')
+        );
+        
+        render_page('cupons_list', $data, 'Cupons', 'Gerencie os cupons de desconto', $breadcrumb);
     }
     public function create() {
-        $this->load->view('cupons_form');
+        // Breadcrumb
+        $breadcrumb = array(
+            add_breadcrumb_item('Cupons', base_url('cupons')),
+            add_breadcrumb_item('Novo Cupom')
+        );
+        
+        render_page('cupons_form', array(), 'Novo Cupom', 'Crie um novo cupom de desconto', $breadcrumb);
     }
     public function store() {
         $cupom = [
