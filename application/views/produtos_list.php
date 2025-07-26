@@ -169,13 +169,51 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">Valor Total</h6>
+                        <h6 class="card-title">Preço Médio</h6>
+                        <h3 class="mb-0">
+                            R$ <?= number_format(array_sum(array_map(function($p) { return $p->preco; }, $produtos)) / count($produtos), 2, ',', '.') ?>
+                        </h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-graph-up fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Segunda linha de estatísticas -->
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Valor Total em Estoque</h6>
                         <h3 class="mb-0">
                             R$ <?= number_format(array_sum(array_map(function($p) { return $p->preco * $p->estoque; }, $produtos)), 2, ',', '.') ?>
                         </h3>
                     </div>
                     <div class="align-self-center">
                         <i class="bi bi-currency-dollar fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total de Itens em Estoque</h6>
+                        <h3 class="mb-0">
+                            <?= number_format(array_sum(array_map(function($p) { return $p->estoque; }, $produtos)), 0, ',', '.') ?>
+                        </h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-boxes fs-1"></i>
                     </div>
                 </div>
             </div>
